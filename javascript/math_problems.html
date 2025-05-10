@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>計算問題生成</title>
+  <style>
+    body {
+      /* font-family: sans-serif;*/
+      margin: 2%;
+      padding: 1%;
+    }
+
+    select,
+    input {
+      margin: 5px;
+      padding: 8px 12px;
+      /* font-size: 16px; */
+    }
+
+    pre {
+      background-color: lightyellow;
+      /*color: darkslategray;*/
+      padding: 1em;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      margin: 20px;
+      border: solid darkolivegreen;
+    }
+
+    form,
+    div {
+      width: 100%;
+      height: 100%;
+    }
+
+    /*    textarea {
+      width: 70%;
+      height: 30;
+    }
+*/
+    h2 {
+      padding: 10px;
+      background-color: burlywood;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>計算問題生成</h1>
+  <p>設定項目をクリックして下さい。</p>
+  <h2 onclick="hidden_area(option_area)">設定項目</h2>
+  <div id="option_area" style="display:none;">
+    <ul id="gen_options">
+      <li>
+        <label>問題数 : <input type="number" name="number_questions" id="number_questions" value="20" min="1"
+            max="1000"></label>
+        生成する問題数
+      </li>
+
+      <li>
+        <label>整数範囲 : <input type="number" name="integer_value" id="integer_value" value="9" min="1" max="100"></label>
+        絶対値がこれを超えない範囲で整数を生成
+      </li>
+
+      <li>
+        <label>プリアンブル等 :
+          <select name="preamble" id="latex_preamble">
+            <option value="no">無し</option>
+            <option value="yes">有り</option>
+          </select>
+        </label>
+        有りを選択するとそのままLaTeXで処理するコードを生成
+      </li>
+
+      <li>
+        <label>段組み : <input type="number" name="number_columns" id="number_columns" value="2" min="1" max="10"></label>
+        出力の段組みを設定
+      </li>
+
+      <li>
+        <label>問題 :
+          <select name="problems" id="select_problems">
+            <!--<option value="">--種類を選択--</option>-->
+            <option value="add_int">整数の加法減法</option>
+            <option value="multi_int">整数の乗法</option>
+            <option value="add_poly">多項式の加法減法</option>
+            <option value="multi_poly">多項式の乗法</option>
+            <option value="factorization_poly">多項式の因数分解</option>
+          </select>
+        </label>
+        生成する問題の種別
+      </li>
+    </ul>
+  </div>
+  <input type="button" value="問題生成" onClick="generated_problems()">
+
+  <h2 onclick="hidden_area(src_area)">生成LaTeXコード</h2>
+  <div id="src_area">
+    <p>
+      問題生成ボタンを押すと、枠内にLaTeXのコードが生成されます。
+      日本語が通らない環境でも処理できるようになっています。
+      状況に応じてクラスファイルや問題の幅を修正して下さい。
+    </p>
+    <p>PDF生成 は Overleaf 上で行う為、アカウントが必要となります。
+      Overleaf <a href="https://ja.overleaf.com/">https://ja.overleaf.com/</a></p>
+    <p>コピーは枠内全体がコピーされます。</p>
+    <form action="https://ja.overleaf.com/docs" method="post" target="_blank">
+      <p><input type="submit" value="PDF生成 on Overleaf">
+        <input type="button" value="コピー" onclick="copy_text('latex_source_code')">
+      </p>
+      <pre id="latex_source_code">LaTeX Source Code Area</pre>
+      <textarea name="snip" id="overleaf_snip" style="display:none;">Area for Overleaf</textarea>
+    </form>
+  </div>
+
+  <script src="math_problems.js"></script>
+</body>
+
+</html>
