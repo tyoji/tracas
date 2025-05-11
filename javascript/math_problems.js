@@ -1,35 +1,35 @@
 
 /** テキストコピー */
-function copy_text(element_id) {
-  const ele = document.getElementById(element_id);
+function copy_text(id) {
+  const ele = document.getElementById(id);
   navigator.clipboard.writeText(ele.textContent);
-  //navigator.clipboard.writeText(ele.value);
 }
 
 // 非表示切り替え
-function hidden_area(src_area) {
-  if (src_area.style.display == "none") {
-    src_area.style.display = "block";
+function hidden_area(hidden_block) {
+  if (hidden_block.style.display == "none") {
+    hidden_block.style.display = "block";
   } else {
-    src_area.style.display = "none";
+    hidden_block.style.display = "none";
   };
 }
 
-/*
-// textarea追加
-function addition_textarea(textdata) {
-  const overleaf_textarea_snip = document.createElement("textarea");
-event.target.removeChild(overleaf_textarea_snip);
-}*/
+// 枠内印刷
+function printout_area(print_area) {
+  const original_html = document.body.innerHTML;
+  const print_data = document.getElementById(print_area).innerHTML;
+
+  document.body.innerHTML = print_data;
+  MathJax.typeset();
+  window.print();
+  document.body.innerHTML = original_html;
+}
 
 
 
 /** 問題生成 */
 function generated_problems() {
   const num_ques = document.getElementById("number_questions").value;
-  //const int_val = document.getElementById("integer_value").value;
-  //const preamble = document.getElementById("latex_Preamble").value;
-  //const num_col = document.getElementById("number_columns").value;
   const sel_prob = document.getElementById("select_problems").value;
 
   // 出力先エリア
@@ -37,17 +37,9 @@ function generated_problems() {
   output_area.textContent = "";
   const output_area_overleaf = document.getElementById("overleaf_snip");
   output_area_overleaf.textContent = "";
+  const output_print_out_area = document.getElementById("print_out_area");
+  output_print_out_area.textContent = "";
 
-  /*
-  output_area.textContent += "問題数" + num_ques + "\n";
-  output_area.textContent += "値の幅" + int_val + "\n";
-  //output_area.textContent += "段組み" + num_col + "\n";
-  output_area.textContent += "種類" + sel_prob + "\n\n";
-  output_area.textContent += addition_polynomials(int_val) + "\n\n";
-  output_area.textContent += multiplication_polynomials(int_val) + "\n\n";
-  output_area.textContent += addition_integers(int_val) + "\n\n";
-  output_area.textContent += multiplication_integers(int_val) + "\n\n";
-*/
 
   const questions = []; // 問題格納用配列
   const answers = []; // 解答格納用配列
@@ -62,9 +54,14 @@ function generated_problems() {
   output_area.textContent = layout_latexdoc(questions, answers);
   // Overleaf用 textareaへ出力
   output_area_overleaf.textContent = layout_latexdoc(questions, answers);
+  // MathJax用 div へ出力
+  output_print_out_area.innerHTML = layout_mathjax_latexdoc(questions, answers);
+  MathJax.typeset()
 
 }
 
+
+/** 問題生成切替用関数 */
 function select_generation_function(select_option) {
   const int_val = document.getElementById("integer_value").value;
   let ques, ans;
@@ -92,6 +89,7 @@ function select_generation_function(select_option) {
 
   return [ques, ans];
 }
+
 
 /** 問題生成用関数 */
 
@@ -163,16 +161,10 @@ function multiplication_polynomials(range) {
   if (coeff_p1_1 < 0) {
     coeff_p1_1 = -1 * coeff_p1_1;
     coeff_p1_2 = -1 * coeff_p1_2;
-  } else {
-    coeff_p1_1 = 1 * coeff_p1_1;
-    coeff_p1_2 = 1 * coeff_p1_2;
   }
   if (coeff_p2_1 < 0) {
     coeff_p2_1 = -1 * coeff_p2_1;
     coeff_p2_2 = -1 * coeff_p2_2;
-  } else {
-    coeff_p2_1 = 1 * coeff_p2_1;
-    coeff_p2_2 = 1 * coeff_p2_2;
   }
 
   const polynomial_1 = transport_polynomial_latex(coeff_p1_1, coeff_p1_2);
@@ -370,5 +362,28 @@ function layout_latexdoc(array_q, array_a) {
 
 }
 
+
+/* MathJax用 文書のレイアウト生成 */
+function layout_mathjax_latexdoc(array_q, array_a) {
+  const num_ques = array_q.length;
+  let output_mathjax_latex_image_code = "";
+
+  for (let j = 0; j < 2; j++) {
+    output_mathjax_latex_image_code += j === 0 ? "<h3>問題</h3>" : "<h3>解答</h3>";
+    output_mathjax_latex_image_code += "<ol>";
+
+    for (let i = 0; i < num_ques; i++) {
+      output_mathjax_latex_image_code += "<li>\\(" + array_q[i];
+      if (j === 1) {
+        output_mathjax_latex_image_code += "=" + array_a[i];
+      }
+      output_mathjax_latex_image_code += "\\)</li>";
+
+    }
+    output_mathjax_latex_image_code += "</ol>";
+  }
+
+  return output_mathjax_latex_image_code;
+}
 
 
