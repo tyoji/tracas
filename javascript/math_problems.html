@@ -34,16 +34,29 @@
       height: 100%;
     }
 
-    /*    textarea {
-      width: 70%;
-      height: 30;
-    }
-*/
     h2 {
       padding: 10px;
       background-color: burlywood;
     }
+
+    h3 {
+      margin: 2em;
+      padding: 1em;
+      border: solid;
+    }
+
+    div#print_out_area {
+      margin: 20px;
+      padding: 2em;
+      border: solid darkolivegreen;
+    }
+
+    ol li {
+      margin: 3px;
+      padding: 1em;
+    }
   </style>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
@@ -115,6 +128,14 @@
     </form>
   </div>
 
+  <h2 onclick="hidden_area(mathjax_area)">数式イメージ</h2>
+  <div id="mathjax_area" style="display:none;">
+    <p>生成された問題のイメージです。印刷ボタンは枠内の印刷を行えます。</p>
+    <input type="button" value="印刷" onClick="printout_area('print_out_area')">
+    <div id="print_out_area">
+      Print Out
+    </div>
+  </div>
   <script src="math_problems.js"></script>
 </body>
 
