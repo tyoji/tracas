@@ -113,14 +113,14 @@
   <div id="src_area">
     <p>
       問題生成ボタンを押すと、枠内にLaTeXのコードが生成されます。
-      日本語が通らない環境でも処理できるようになっています。
-      状況に応じてクラスファイルや問題の幅を修正して下さい。
+      LuaLaTeX用のコードですが、クラスファイルを変更すれば他のエンジンでもタイプセット可能です。
     </p>
     <p>PDF生成 は Overleaf 上で行う為、アカウントが必要となります。
       Overleaf <a href="https://ja.overleaf.com/">https://ja.overleaf.com/</a></p>
     <p>コピーは枠内全体がコピーされます。</p>
     <form action="https://ja.overleaf.com/docs" method="post" target="_blank">
       <p><input type="submit" value="PDF生成 on Overleaf">
+        <input type="hidden" name="engine" value="lualatex">
         <input type="button" value="コピー" onclick="copy_text('latex_source_code')">
       </p>
       <pre id="latex_source_code">LaTeX Source Code Area</pre>

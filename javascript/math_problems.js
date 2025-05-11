@@ -303,15 +303,16 @@ function layout_latexdoc(array_q, array_a) {
 
   if (preamble) {
     output_latex_source_code += `
-\\documentclass[b5paper,10pt]{article}
-%\\documentclass[b5paper,10pt]{ltjsarticle}
+%\\documentclass[b5paper,10pt]{article}
+\\documentclass[b5paper,10pt]{ltjsarticle}
 \\usepackage[top=20truemm,bottom=10truemm,left=10truemm,right=10truemm]{geometry}
 
 \\usepackage{fancyhdr}
 \\pagestyle{fancy}
-\\fancyhead[L]{Exercises \\quad {\\tiny \\today}}
-\\fancyhead[R]{Class\\hspace{30pt}No\\hspace{30pt}Name\\hspace{100pt} \\qquad / ${num_ques} }
-
+%\\fancyhead[L]{Exercises \\quad {\\tiny \\today}}
+\\fancyhead[L]{演習 \\quad {\\tiny \\today}}
+%\\fancyhead[R]{Class\\hspace{30pt}No\\hspace{30pt}Name\\hspace{100pt} \\qquad / ${num_ques} }
+\\fancyhead[R]{クラス\\hspace{30pt} 番号\\hspace{30pt} 氏名\\hspace{100pt} \\qquad / ${num_ques} }
 \\fancyfoot{}
 
 \\renewcommand{\\labelenumi}{(\\theenumi)}
