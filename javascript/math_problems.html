@@ -7,7 +7,7 @@
   <style>
     body {
       /* font-family: sans-serif;*/
-      margin: 2%;
+      margin: 0% 2%;
       padding: 1%;
     }
 
@@ -21,19 +21,19 @@
     pre {
       background-color: lightyellow;
       /*color: darkslategray;*/
-      padding: 1em;
+      padding: 0 1em;
       white-space: pre-wrap;
       font-family: 'Courier New', monospace;
-      margin: 20px;
+      margin: 10px 20px;
       border: solid darkolivegreen;
     }
 
-    form,
+    /*    form,
     div {
       width: 100%;
       height: 100%;
     }
-
+*/
     h2 {
       padding: 10px;
       background-color: burlywood;
@@ -55,15 +55,38 @@
       margin: 3px;
       padding: 1em;
     }
+
+    #global-nav {
+      background: lightcyan;
+      position: sticky;
+      top: 0px;
+      margin: 0% 10%;
+      padding: 3px;
+      border: solid;
+    }
+
+    #global-nav span {
+      margin: 0% 5%;
+    }
   </style>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body>
-  <h1>計算問題生成</h1>
+
+  <nav id="global-nav">
+
+    <span><a href="#gen_problems">計算問題生成</a></span>
+    <span><a href="#setting">設定項目</a></span>
+    <span><a href="#gen_LaTeXcode">生成LaTeXコード</a></span>
+    <span><a href="#math_img">数式イメージ</a></span>
+    <span><a href="https://github.com/tyoji/tracas">GitHub リポジトリ</a></span>
+
+  </nav>
+
+  <h1 id="gen_problems">計算問題生成</h1>
   <p>設定項目をクリックして下さい。</p>
-  <p>GitHubのリポジトリは<a href="https://github.com/tyoji/tracas">こちら</a></p>
-  <h2 onclick="hidden_area(option_area)">設定項目</h2>
+  <h2 id="setting" onclick="hidden_area(option_area)">設定項目</h2>
   <div id="option_area" style="display:none;">
     <ul id="gen_options">
       <li>
@@ -98,9 +121,17 @@
             <!--<option value="">--種類を選択--</option>-->
             <option value="add_int">整数の加法減法</option>
             <option value="multi_int">整数の乗法</option>
+            <option value="add_ratio">有理数の加法減法</option>
+            <option value="multi_ratio">有理数の乗法除法</option>
             <option value="add_poly">多項式の加法減法</option>
+            <option value="multi_monic_poly">モニック多項式の乗法</option>
             <option value="multi_poly">多項式の乗法</option>
+            <option value="factorization_monic_poly">モニック多項式の因数分解</option>
             <option value="factorization_poly">多項式の因数分解</option>
+            <option value="comp_sq_int">平方完成 易</option>
+            <option value="comp_sq">平方完成</option>
+            <option value="tri_ratio_val">三角比の値</option>
+            <option value="tri_func_val">三角関数の値</option>
           </select>
         </label>
         生成する問題の種別
@@ -109,7 +140,7 @@
   </div>
   <input type="button" value="問題生成" onClick="generated_problems()">
 
-  <h2 onclick="hidden_area(src_area)">生成LaTeXコード</h2>
+  <h2 id="gen_LaTeXcode" onclick="hidden_area(src_area)">生成LaTeXコード</h2>
   <div id="src_area">
     <p>
       問題生成ボタンを押すと、枠内にLaTeXのコードが生成されます。
@@ -128,7 +159,7 @@
     </form>
   </div>
 
-  <h2 onclick="hidden_area(mathjax_area)">数式イメージ</h2>
+  <h2 id="math_img" onclick="hidden_area(mathjax_area)">数式イメージ</h2>
   <div id="mathjax_area" style="display:none;">
     <p>生成された問題のイメージです。印刷ボタンは枠内の印刷を行えます。</p>
     <input type="button" value="印刷" onClick="printout_area('print_out_area')">

@@ -73,14 +73,38 @@ function select_generation_function(select_option) {
     case "multi_int":
       [ques, ans] = multiplication_integers(int_val);
       break;
+    case "add_ratio":
+      [ques, ans] = addition_rational_nums(int_val);
+      break;
+    case "multi_ratio":
+      [ques, ans] = multiplication_rational_nums(int_val);
+      break;
     case "add_poly":
       [ques, ans] = addition_polynomials(int_val);
+      break;
+    case "multi_monic_poly":
+      [ques, ans] = multiplication_monic_polynomials(int_val);
       break;
     case "multi_poly":
       [ques, ans] = multiplication_polynomials(int_val);
       break;
+    case "factorization_monic_poly":
+      [ans, ques] = multiplication_monic_polynomials(int_val);
+      break;
     case "factorization_poly":
       [ans, ques] = multiplication_polynomials(int_val);
+      break;
+    case "comp_sq_int":
+      [ques, ans] = completing_the_square_int(int_val);
+      break;
+    case "comp_sq":
+      [ques, ans] = completing_the_square(int_val);
+      break;
+    case "tri_ratio_val":
+      [ques, ans] = triangle_function_value(1);
+      break;
+    case "tri_func_val":
+      [ques, ans] = triangle_function_value(2);
       break;
     default:
       [ques, ans] = ["問題種別を選択してください", "問題種別を選択してください"];
@@ -95,38 +119,84 @@ function select_generation_function(select_option) {
 
 // 問題作成 整数の加法
 function addition_integers(range) {
-  const coefficients = generate_integers(2, range, false);
-  let ques = coefficients[0];
+  const integers = generate_integers(2, range, false);
+  let ques = integers[0];
   let ans;
 
   if (Math.floor(Math.random() * 2) === 0) {
     ques += "+";
-    ans = coefficients[0] + coefficients[1];
+    ans = integers[0] + integers[1];
   } else {
     ques += "-";
-    ans = coefficients[0] - coefficients[1];
+    ans = integers[0] - integers[1];
   }
-  if (coefficients[1] < 0) {
-    ques += "(" + coefficients[1] + ")";
+  if (integers[1] < 0) {
+    ques += "(" + integers[1] + ")";
   } else {
-    ques += coefficients[1];
+    ques += integers[1];
   }
   return [ques, ans];
 }
 
 // 問題作成 整数の乗法
 function multiplication_integers(range) {
-  const coefficients = generate_integers(2, range, false);
-  let ques = coefficients[0] + " \\times ";
+  const integers = generate_integers(2, range, false);
+  let ques = integers[0] + " \\times ";
   let ans;
 
-  if (coefficients[1] < 0) {
-    ques += "(" + coefficients[1] + ")";
+  if (integers[1] < 0) {
+    ques += "(" + integers[1] + ")";
   } else {
-    ques += "" + coefficients[1] + "";
+    ques += "" + integers[1] + "";
   }
-  ans = coefficients[0] * coefficients[1];
+  ans = integers[0] * integers[1];
 
+  return [ques, ans];
+}
+
+
+// 問題作成 有理数の加法
+function addition_rational_nums(range) {
+  const integers = generate_integers(4, range, false);
+  let ques = "\\displaystyle{}" + transport_fraction_latex(integers[0], integers[1]);
+  let ans;
+
+  if (Math.floor(Math.random() * 2) === 0) {
+    ques += "+";
+    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3] + integers[1] * integers[2], integers[1] * integers[3]);
+  } else {
+    ques += "-";
+    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3] - integers[1] * integers[2], integers[1] * integers[3]);
+  }
+
+  if (integers[2] * integers[3] < 0) {
+    ques += "\\left(" + transport_fraction_latex(integers[2], integers[3]) + "\\right)";
+  } else {
+    ques += transport_fraction_latex(integers[2], integers[3]);
+  }
+  return [ques, ans];
+}
+
+
+// 問題作成 有理数の乗法
+function multiplication_rational_nums(range) {
+  const integers = generate_integers(4, range, false);
+  let ques = "\\displaystyle{}" + transport_fraction_latex(integers[0], integers[1]);
+  let ans;
+
+  if (Math.floor(Math.random() * 2) === 0) {
+    ques += "\\times{}";
+    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[2], integers[1] * integers[3]);
+  } else {
+    ques += "\\div{}";
+    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3], integers[1] * integers[2]);
+  }
+
+  if (integers[2] * integers[3] < 0) {
+    ques += "\\left(" + transport_fraction_latex(integers[2], integers[3]) + "\\right)";
+  } else {
+    ques += transport_fraction_latex(integers[2], integers[3]);
+  }
   return [ques, ans];
 }
 
@@ -145,6 +215,27 @@ function addition_polynomials(range) {
     ques = "(" + polynomial_1 + ")-(" + polynomial_2 + ")";
     ans = transport_polynomial_latex(coefficients[0] - coefficients[1], coefficients[2] - coefficients[3], coefficients[4] - coefficients[5]);
   }
+  return [ques, ans];
+}
+
+// 問題作成 モニック多項式の乗法
+function multiplication_monic_polynomials(range) {
+  const coefficients = generate_integers(2, range, false);
+  let ques, ans;
+
+  let coeff_1 = coefficients[0];
+  let coeff_2 = coefficients[1];
+
+  const polynomial_1 = transport_polynomial_latex(1, coeff_1);
+  const polynomial_2 = transport_polynomial_latex(1, coeff_2);
+
+  if (polynomial_1 === polynomial_2) {
+    ques = "(" + polynomial_1 + ")^{2}";
+  } else {
+    ques = "(" + polynomial_1 + ")(" + polynomial_2 + ")";
+  }
+  ans = transport_polynomial_latex(1, coeff_1 + coeff_2, coeff_1 * coeff_2);
+
   return [ques, ans];
 }
 
@@ -179,6 +270,98 @@ function multiplication_polynomials(range) {
 
   return [ques, ans];
 }
+
+// 問題作成 平方完成 整数
+function completing_the_square_int(range) {
+  const integers = generate_integers(2, range, false);
+  let ques = transport_polynomial_latex(1, 2 * integers[0], (integers[0] ** 2) + integers[1]);
+  let ans = "(" + transport_polynomial_latex(1, integers[0]) + ")^{2}";
+  if (integers[1] > 0) { ans += "+"; }
+  ans += integers[1];
+
+  return [ques, ans];
+}
+
+
+// 問題作成 平方完成
+function completing_the_square(range) {
+  const integers = generate_integers(3, range, false);
+  let ques = transport_polynomial_latex(integers[0], integers[1], integers[2]);
+  let ans = "\\displaystyle{}";
+  ans += integers[0] === 1 ? "" : integers[0] === -1 ? "-" : integers[0];
+  ans += "\\left( x";
+  if (integers[1] / integers[0] > 0) { ans += "+"; }
+  ans += transport_fraction_latex(integers[1], 2 * integers[0]) + "\\right)^{2}";
+  let nu = 4 * integers[0] * integers[2] - (integers[1] ** 2);
+  let de = 4 * integers[0];
+  if (nu / de > 0) { ans += "+"; }
+  ans += transport_fraction_latex(nu, de);
+
+  return [ques, ans];
+}
+
+// 問題作成 三角関数の値
+function triangle_function_value(flag_value) {
+  const trifunc_values = [
+    ["\\sin{0^\\circ}", "0"],
+    ["\\cos{0^\\circ}", "1"],
+    ["\\tan{0^\\circ}", "0"],
+    ["\\sin{30^\\circ}", "\\frac{1}{2}"],
+    ["\\cos{30^\\circ}", "\\frac{\\sqrt{3}}{2}"],
+    ["\\tan{30^\\circ}", "\\frac{1}{\\sqrt{3}}"],
+    ["\\sin{45^\\circ}", "\\frac{1}{\\sqrt{2}}"],
+    ["\\cos{45^\\circ}", "\\frac{1}{\\sqrt{2}}"],
+    ["\\tan{45^\\circ}", "1"],
+    ["\\sin{60^\\circ}", "\\frac{\\sqrt{3}}{2}"],
+    ["\\cos{60^\\circ}", "\\frac{1}{2}"],
+    ["\\tan{60^\\circ}", "\\sqrt{3}"],
+    ["\\sin{90^\\circ}", "1"],
+    ["\\cos{90^\\circ}", "0"],
+    ["\\tan{90^\\circ}", "\\text{値なし}"],
+    ["\\sin{120^\\circ}", "\\frac{\\sqrt{3}}{2}"],
+    ["\\cos{120^\\circ}", "-\\frac{1}{2}"],
+    ["\\tan{120^\\circ}", "-\\sqrt{3}"],
+    ["\\sin{135^\\circ}", "\\frac{1}{\\sqrt{2}}"],
+    ["\\cos{135^\\circ}", "-\\frac{1}{\\sqrt{2}}"],
+    ["\\tan{135^\\circ}", "-1"],
+    ["\\sin{150^\\circ}", "\\frac{1}{2}"],
+    ["\\cos{150^\\circ}", "-\\frac{\\sqrt{3}}{2}"],
+    ["\\tan{150^\\circ}", "-\\frac{1}{\\sqrt{3}}"],
+    ["\\sin{180^\\circ}", "0"],
+    ["\\cos{180^\\circ}", "-1"],
+    ["\\tan{180^\\circ}", "0"], // 27
+    ["\\sin{210^\\circ}", "-\\frac{1}{2}"],
+    ["\\cos{210^\\circ}", "-\\frac{\\sqrt{3}}{2}"],
+    ["\\tan{210^\\circ}", "\\frac{1}{\\sqrt{3}}"],
+    ["\\sin{225^\\circ}", "-\\frac{1}{\\sqrt{2}}"],
+    ["\\cos{225^\\circ}", "-\\frac{1}{\\sqrt{2}}"],
+    ["\\tan{225^\\circ}", "1"],
+    ["\\sin{240^\\circ}", "-\\frac{\\sqrt{3}}{2}"],
+    ["\\cos{240^\\circ}", "-\\frac{1}{2}"],
+    ["\\tan{240^\\circ}", "\\sqrt{3}"],
+    ["\\sin{270^\\circ}", "-1"],
+    ["\\cos{270^\\circ}", "0"],
+    ["\\tan{270^\\circ}", "\\text{値なし}"],
+    ["\\sin{300^\\circ}", "-\\frac{\\sqrt{3}}{2}"],
+    ["\\cos{300^\\circ}", "\\frac{1}{2}"],
+    ["\\tan{300^\\circ}", "-\\sqrt{3}"],
+    ["\\sin{315^\\circ}", "-\\frac{1}{\\sqrt{2}}"],
+    ["\\cos{315^\\circ}", "\\frac{1}{\\sqrt{2}}"],
+    ["\\tan{315^\\circ}", "-1"],
+    ["\\sin{330^\\circ}", "-\\frac{1}{2}"],
+    ["\\cos{330^\\circ}", "\\frac{\\sqrt{3}}{2}"],
+    ["\\tan{330^\\circ}", "-\\frac{1}{\\sqrt{3}}"],
+    ["\\sin{360^\\circ}", "0"],
+    ["\\cos{360^\\circ}", "1"],
+    ["\\tan{360^\\circ}", "0"] //51
+  ];
+  const upper_bound = flag_value === 1 ? 27 : trifunc_values.length;
+  let [ques, ans] = trifunc_values[Math.floor(Math.random() * upper_bound)];
+  ans = "\\displaystyle{}" + ans;
+
+  return [ques, ans];
+}
+
 
 
 /** 数学の関数 */
@@ -285,7 +468,7 @@ function transport_fraction_latex(numerator, denominator) {
   if (de === 1) {
     fraction += nu;
   } else {
-    fraction += `\\frac{${nu} } {${de} } `;
+    fraction += `\\frac{${nu}}{${de}}`;
   }
 
   return fraction;
