@@ -21,19 +21,13 @@
     pre {
       background-color: lightyellow;
       /*color: darkslategray;*/
-      padding: 0 1em;
+      padding: 1em;
       white-space: pre-wrap;
       font-family: 'Courier New', monospace;
       margin: 10px 20px;
       border: solid darkolivegreen;
     }
 
-    /*    form,
-    div {
-      width: 100%;
-      height: 100%;
-    }
-*/
     h2 {
       padding: 10px;
       background-color: burlywood;
@@ -51,22 +45,25 @@
       border: solid darkolivegreen;
     }
 
-    ol li {
-      margin: 3px;
-      padding: 1em;
+    ol#question li {
+      /*margin-left: 0px;*/
+      padding-left: 1em;
+      padding-bottom: 4em;
     }
 
     #global-nav {
-      background: lightcyan;
+      background: lightgreen;
       position: sticky;
       top: 0px;
       margin: 0% 10%;
-      padding: 3px;
-      border: solid;
+      padding: 0.5em;
+      /*border: solid;*/
     }
 
     #global-nav span {
-      margin: 0% 5%;
+      margin: 0% 2%;
+      padding: 0.2em 0.5em;
+      background-color: lightyellow;
     }
   </style>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -75,17 +72,16 @@
 <body>
 
   <nav id="global-nav">
-
+    <span>リンク</span>
     <span><a href="#gen_problems">計算問題生成</a></span>
-    <span><a href="#setting">設定項目</a></span>
-    <span><a href="#gen_LaTeXcode">生成LaTeXコード</a></span>
-    <span><a href="#math_img">数式イメージ</a></span>
-    <span><a href="https://github.com/tyoji/tracas">GitHub リポジトリ</a></span>
-
+    <span><a href="#setting">設定</a></span>
+    <span><a href="#gen_LaTeXcode">LaTeXコード</a></span>
+    <span><a href="#math_img">イメージ</a></span>
+    <span><a href="https://github.com/tyoji/tracas">GitHub</a></span>
   </nav>
 
   <h1 id="gen_problems">計算問題生成</h1>
-  <p>設定項目をクリックして下さい。</p>
+  <p>設定項目をクリックして下さい</p>
   <h2 id="setting" onclick="hidden_area(option_area)">設定項目</h2>
   <div id="option_area" style="display:none;">
     <ul id="gen_options">
@@ -129,6 +125,8 @@
             <option value="multi_poly">多項式の乗法</option>
             <option value="factorization_monic_poly">モニック多項式の因数分解</option>
             <option value="factorization_poly">多項式の因数分解</option>
+            <option value="equation_ratio">2次方程式 有理数解</option>
+            <option value="equation_cplx">2次方程式 複素数解</option>
             <option value="comp_sq_int">平方完成 易</option>
             <option value="comp_sq">平方完成</option>
             <option value="tri_ratio_val">三角比の値</option>
@@ -164,6 +162,16 @@
   <div id="mathjax_area" style="display:none;">
     <p>生成された問題のイメージです。印刷ボタンは枠内の印刷を行えます。</p>
     <input type="button" value="印刷" onClick="printout_area('print_out_area')">
+    ｜
+    <label>問題間隔の変更 :
+      <select name="mathjaxlayout" id="mathjax_layout">
+        <option value="non">無し</option>
+        <option value="narrow">狭い</option>
+        <option value="standard">標準</option>
+        <option value="wide">広い</option>
+      </select>
+      <input type="button" value="再表示" onClick="change_width()">
+    </label>
     <div id="print_out_area">
       Print Out
     </div>

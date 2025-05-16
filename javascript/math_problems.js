@@ -25,6 +25,32 @@ function printout_area(print_area) {
   document.body.innerHTML = original_html;
 }
 
+// 表示幅切替
+function change_width() {
+  const select_option = document.getElementById("mathjax_layout").value;
+  let width_value;
+  switch (select_option) {
+    case "non":
+      width_value = "0em";
+      break;
+    case "narrow":
+      width_value = "3em";
+      break;
+    case "standard":
+      width_value = "6em";
+      break;
+    case "wide":
+      width_value = "15em";
+      break;
+    default:
+      width_value = "4em";
+      break;
+  };
+  document.querySelectorAll("ol#question li").forEach(item => {
+    item.style.paddingLeft = "1em";
+    item.style.paddingBottom = width_value;
+  });
+}
 
 
 /** 問題生成 */
@@ -69,45 +95,69 @@ function select_generation_function(select_option) {
   switch (select_option) {
     case "add_int":
       [ques, ans] = addition_integers(int_val);
+      ans = "=" + ans;
       break;
     case "multi_int":
       [ques, ans] = multiplication_integers(int_val);
+      ans = "=" + ans;
       break;
     case "add_ratio":
       [ques, ans] = addition_rational_nums(int_val);
+      ques = "\\displaystyle{}" + ques;
+      ans = "\\displaystyle{} =" + ans;
       break;
     case "multi_ratio":
       [ques, ans] = multiplication_rational_nums(int_val);
+      ques = "\\displaystyle{}" + ques;
+      ans = "\\displaystyle{} =" + ans;
       break;
     case "multi_cplx":
       [ques, ans] = multiplication_complex_nums(int_val);
+      ans = "=" + ans;
       break;
     case "add_poly":
       [ques, ans] = addition_polynomials(int_val);
+      ans = "=" + ans;
       break;
     case "multi_monic_poly":
       [ques, ans] = multiplication_monic_polynomials(int_val);
+      ans = "=" + ans;
       break;
     case "multi_poly":
       [ques, ans] = multiplication_polynomials(int_val);
+      ans = "=" + ans;
       break;
     case "factorization_monic_poly":
       [ans, ques] = multiplication_monic_polynomials(int_val);
+      ans = "=" + ans;
       break;
     case "factorization_poly":
       [ans, ques] = multiplication_polynomials(int_val);
+      ans = "=" + ans;
+      break;
+    case "equation_ratio":
+      [ques, ans] = equation_rational_numbers(int_val);
+      ans = "\\displaystyle{} x=" + ans;
+      break;
+    case "equation_cplx":
+      [ques, ans] = equation_complex_numbers(int_val);
+      ans = "\\displaystyle{} x=" + ans;
       break;
     case "comp_sq_int":
       [ques, ans] = completing_the_square_int(int_val);
+      ans = "=" + ans;
       break;
     case "comp_sq":
       [ques, ans] = completing_the_square(int_val);
+      ans = "\\displaystyle{} =" + ans;
       break;
     case "tri_ratio_val":
       [ques, ans] = triangle_function_value(1);
+      if (ans !== "値なし") { ans = "\\displaystyle{} =" + ans; }
       break;
     case "tri_func_val":
       [ques, ans] = triangle_function_value(2);
+      if (ans !== "値なし") { ans = "\\displaystyle{} =" + ans; }
       break;
     default:
       [ques, ans] = ["問題種別を選択してください", "問題種別を選択してください"];
@@ -161,15 +211,15 @@ function multiplication_integers(range) {
 // 問題作成 有理数の加法
 function addition_rational_nums(range) {
   const integers = generate_integers(4, range, false);
-  let ques = "\\displaystyle{}" + transport_fraction_latex(integers[0], integers[1]);
+  let ques = transport_fraction_latex(integers[0], integers[1]);
   let ans;
 
   if (Math.floor(Math.random() * 2) === 0) {
     ques += "+";
-    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3] + integers[1] * integers[2], integers[1] * integers[3]);
+    ans = transport_fraction_latex(integers[0] * integers[3] + integers[1] * integers[2], integers[1] * integers[3]);
   } else {
     ques += "-";
-    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3] - integers[1] * integers[2], integers[1] * integers[3]);
+    ans = transport_fraction_latex(integers[0] * integers[3] - integers[1] * integers[2], integers[1] * integers[3]);
   }
 
   if (integers[2] * integers[3] < 0) {
@@ -184,15 +234,15 @@ function addition_rational_nums(range) {
 // 問題作成 有理数の乗法
 function multiplication_rational_nums(range) {
   const integers = generate_integers(4, range, false);
-  let ques = "\\displaystyle{}" + transport_fraction_latex(integers[0], integers[1]);
+  let ques = transport_fraction_latex(integers[0], integers[1]);
   let ans;
 
   if (Math.floor(Math.random() * 2) === 0) {
     ques += "\\times{}";
-    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[2], integers[1] * integers[3]);
+    ans = transport_fraction_latex(integers[0] * integers[2], integers[1] * integers[3]);
   } else {
     ques += "\\div{}";
-    ans = "\\displaystyle{}" + transport_fraction_latex(integers[0] * integers[3], integers[1] * integers[2]);
+    ans = transport_fraction_latex(integers[0] * integers[3], integers[1] * integers[2]);
   }
 
   if (integers[2] * integers[3] < 0) {
@@ -238,28 +288,28 @@ function multiplication_complex_nums(range) {
 
 // 問題作成 多項式の加法
 function addition_polynomials(range) {
-  const coefficients = [...generate_integers(2, range, false), ...generate_integers(4, range)];
+  const integers = [...generate_integers(2, range, false), ...generate_integers(4, range)];
   let ques, ans;
-  const polynomial_1 = transport_polynomial_latex(coefficients[0], coefficients[2], coefficients[4]);
-  const polynomial_2 = transport_polynomial_latex(coefficients[1], coefficients[3], coefficients[5]);
+  const polynomial_1 = transport_polynomial_latex(integers[0], integers[2], integers[4]);
+  const polynomial_2 = transport_polynomial_latex(integers[1], integers[3], integers[5]);
 
   if (Math.floor(Math.random() * 2) === 0) {
     ques = "(" + polynomial_1 + ")+(" + polynomial_2 + ")";
-    ans = transport_polynomial_latex(coefficients[0] + coefficients[1], coefficients[2] + coefficients[3], coefficients[4] + coefficients[5]);
+    ans = transport_polynomial_latex(integers[0] + integers[1], integers[2] + integers[3], integers[4] + integers[5]);
   } else {
     ques = "(" + polynomial_1 + ")-(" + polynomial_2 + ")";
-    ans = transport_polynomial_latex(coefficients[0] - coefficients[1], coefficients[2] - coefficients[3], coefficients[4] - coefficients[5]);
+    ans = transport_polynomial_latex(integers[0] - integers[1], integers[2] - integers[3], integers[4] - integers[5]);
   }
   return [ques, ans];
 }
 
 // 問題作成 モニック多項式の乗法
 function multiplication_monic_polynomials(range) {
-  const coefficients = generate_integers(2, range, false);
+  const integers = generate_integers(2, range, false);
   let ques, ans;
 
-  let coeff_1 = coefficients[0];
-  let coeff_2 = coefficients[1];
+  let coeff_1 = integers[0];
+  let coeff_2 = integers[1];
 
   const polynomial_1 = transport_polynomial_latex(1, coeff_1);
   const polynomial_2 = transport_polynomial_latex(1, coeff_2);
@@ -276,13 +326,13 @@ function multiplication_monic_polynomials(range) {
 
 // 問題作成 多項式の乗法
 function multiplication_polynomials(range) {
-  const coefficients = generate_integers(4, range, false);
+  const integers = generate_integers(4, range, false);
   let ques, ans;
   let coeff_p1_1, coeff_p1_2, coeff_p2_1, coeff_p2_2;
-  coeff_p1_1 = coefficients[0] / gcd(coefficients[0], coefficients[2]);
-  coeff_p1_2 = coefficients[2] / gcd(coefficients[0], coefficients[2]);
-  coeff_p2_1 = coefficients[1] / gcd(coefficients[1], coefficients[3]);
-  coeff_p2_2 = coefficients[3] / gcd(coefficients[1], coefficients[3]);
+  coeff_p1_1 = integers[0] / gcd(integers[0], integers[2]);
+  coeff_p1_2 = integers[2] / gcd(integers[0], integers[2]);
+  coeff_p2_1 = integers[1] / gcd(integers[1], integers[3]);
+  coeff_p2_2 = integers[3] / gcd(integers[1], integers[3]);
 
   if (coeff_p1_1 < 0) {
     coeff_p1_1 = -1 * coeff_p1_1;
@@ -306,6 +356,78 @@ function multiplication_polynomials(range) {
   return [ques, ans];
 }
 
+// 問題作成 方程式 有理数
+function equation_rational_numbers(range) {
+  const integers = generate_integers(4, range, false);
+  let ques, ans;
+  let coeff_p1_1, coeff_p1_2, coeff_p2_1, coeff_p2_2;
+  coeff_p1_1 = integers[0] / gcd(integers[0], integers[2]);
+  coeff_p1_2 = integers[2] / gcd(integers[0], integers[2]);
+  coeff_p2_1 = integers[1] / gcd(integers[1], integers[3]);
+  coeff_p2_2 = integers[3] / gcd(integers[1], integers[3]);
+
+  if (coeff_p1_1 < 0) {
+    coeff_p1_1 = -1 * coeff_p1_1;
+    coeff_p1_2 = -1 * coeff_p1_2;
+  }
+  if (coeff_p2_1 < 0) {
+    coeff_p2_1 = -1 * coeff_p2_1;
+    coeff_p2_2 = -1 * coeff_p2_2;
+  }
+
+  ques = transport_polynomial_latex(coeff_p1_1 * coeff_p2_1, coeff_p1_1 * coeff_p2_2 + coeff_p1_2 * coeff_p2_1, coeff_p1_2 * coeff_p2_2) + "=0";
+  if (coeff_p1_1 === coeff_p2_1 && coeff_p1_2 === coeff_p2_2) {
+    ans = transport_fraction_latex(-1 * coeff_p1_2, coeff_p1_1);
+  } else {
+    ans = transport_fraction_latex(-1 * coeff_p1_2, coeff_p1_1) + " , " + transport_fraction_latex(-1 * coeff_p2_2, coeff_p2_1);
+  }
+  return [ques, ans];
+}
+
+// 問題作成 方程式 複素数
+function equation_complex_numbers(range) {
+  const integers = generate_integers(3, range, false);
+  let ques, ans;
+  let coeff_a, coeff_b, coeff_c;
+  coeff_a = integers[0] / gcd(integers[0], integers[1], integers[2]);
+  coeff_b = integers[1] / gcd(integers[0], integers[1], integers[2]);
+  coeff_c = integers[2] / gcd(integers[0], integers[1], integers[2]);
+  const discriminant = coeff_b ** 2 - 4 * coeff_a * coeff_c;
+
+  ques = transport_polynomial_latex(coeff_a, coeff_b, coeff_c) + "=0";
+
+  if (coeff_a < 0) {
+    coeff_a *= -1; coeff_b *= -1; coeff_c *= -1;;
+  }
+
+  if (discriminant === 0) { //重解の場合
+    ans = transport_fraction_latex(-1 * coeff_b, 2 * coeff_a);
+  } else {
+    let out_sq, in_sq;
+    [out_sq, in_sq] = simplify_sqrt_root(Math.abs(discriminant));
+
+    const common_div = gcd(coeff_b, 2 * coeff_a, out_sq);
+    const denominator = 2 * coeff_a / common_div;
+    const numerator1 = -1 * coeff_b / common_div;
+    const numerator2 = out_sq / common_div;
+
+    if (in_sq === 1) { // 有理数解の場合
+      ans = transport_fraction_latex(numerator1 + numerator2, denominator) + ", " + transport_fraction_latex(numerator1 - numerator2, denominator);
+    } else {
+      let numerator = numerator1 + "\\pm " + transport_monomial(numerator2, "\\sqrt{") + in_sq + "}";
+      if (discriminant < 0) { numerator += "i"; }
+
+      if (denominator === 1) {
+        ans = numerator;
+      } else {
+        ans = "\\frac{" + numerator + "}{" + denominator + "}"
+      }
+    }
+  }
+
+  return [ques, ans];
+}
+
 // 問題作成 平方完成 整数
 function completing_the_square_int(range) {
   const integers = generate_integers(2, range, false);
@@ -317,14 +439,12 @@ function completing_the_square_int(range) {
   return [ques, ans];
 }
 
-
 // 問題作成 平方完成
 function completing_the_square(range) {
   const integers = generate_integers(3, range, false);
-  let ques = transport_polynomial_latex(integers[0], integers[1], integers[2]);
-  let ans = "\\displaystyle{}";
-  ans += integers[0] === 1 ? "" : integers[0] === -1 ? "-" : integers[0];
-  ans += "\\left( x";
+  const ques = transport_polynomial_latex(integers[0], integers[1], integers[2]);
+  let ans = transport_monomial(integers[0], "\\left( x");
+
   if (integers[1] / integers[0] > 0) { ans += "+"; }
   ans += transport_fraction_latex(integers[1], 2 * integers[0]) + "\\right)^{2}";
   let nu = 4 * integers[0] * integers[2] - (integers[1] ** 2);
@@ -392,12 +512,11 @@ function triangle_function_value(flag_value) {
   ];
   const upper_bound = flag_value === 1 ? 27 : trifunc_values.length;
   let [ques, ans] = trifunc_values[Math.floor(Math.random() * upper_bound)];
-  ans = "\\displaystyle{}" + ans;
+
 
   return [ques, ans];
 }
 
-// 2次方程式
 // 2次関数グラフ
 // 三角方程式
 // 微分
@@ -454,6 +573,22 @@ function gcd(...numbers) {
     return Math.abs(numbers[0]);
   }
   return numbers.reduce((acc, val) => gcd_2(acc, val));
+}
+
+// 根号の中の数を小さくする
+function simplify_sqrt_root(input_number) {
+  if (input_number <= 0) return "negative number"; // 正の整数のチェック
+  let out_num = 1; // 根号の外に出る数
+  let in_num = input_number; // 根号内の数
+
+  for (let i = 2; i * i <= input_number; i++) {
+    while (in_num % (i * i) === 0) {
+      out_num *= i;
+      in_num /= i * i;
+    }
+  }
+
+  return [out_num, in_num];
 }
 
 /* ************************************************************************************** */
@@ -574,9 +709,9 @@ function layout_latexdoc(array_q, array_a) {
     for (let i = 0; i < num_ques; i++) {
       output_latex_source_code += "\\item $" + array_q[i] + "$ \\\\\n";
       if (j === 0) {
-        output_latex_source_code += "\\phantom{$=" + array_a[i] + "$}\n";
+        output_latex_source_code += "\\phantom{$" + array_a[i] + "$}\n";
       } else {
-        output_latex_source_code += "$=" + array_a[i] + "$\n";
+        output_latex_source_code += "$" + array_a[i] + "$\n";
       }
     }
 
@@ -606,14 +741,15 @@ function layout_mathjax_latexdoc(array_q, array_a) {
 
   for (let j = 0; j < 2; j++) {
     output_mathjax_latex_image_code += j === 0 ? "<h3>問題</h3>" : "<h3>解答</h3>";
-    output_mathjax_latex_image_code += "<ol>";
+
+    output_mathjax_latex_image_code += j === 0 ? '<ol id="question">' : '<ol>';
 
     for (let i = 0; i < num_ques; i++) {
-      output_mathjax_latex_image_code += "<li>\\(" + array_q[i];
+      output_mathjax_latex_image_code += "<li><p>\\(" + array_q[i] + "\\)</p>";
       if (j === 1) {
-        output_mathjax_latex_image_code += "=" + array_a[i];
+        output_mathjax_latex_image_code += "<p>\\(" + array_a[i] + "\\)</p>";
       }
-      output_mathjax_latex_image_code += "\\)</li>";
+      output_mathjax_latex_image_code += "</li>";
 
     }
     output_mathjax_latex_image_code += "</ol>";
