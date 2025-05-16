@@ -79,6 +79,9 @@ function select_generation_function(select_option) {
     case "multi_ratio":
       [ques, ans] = multiplication_rational_nums(int_val);
       break;
+    case "multi_cplx":
+      [ques, ans] = multiplication_complex_nums(int_val);
+      break;
     case "add_poly":
       [ques, ans] = addition_polynomials(int_val);
       break;
@@ -200,6 +203,38 @@ function multiplication_rational_nums(range) {
   return [ques, ans];
 }
 
+// 問題作成 複素数の乗法
+function multiplication_complex_nums(range) {
+  const integers = generate_integers(4, range, false);
+  let ques, ans;
+  const re1 = integers[0];
+  const re2 = integers[1];
+  const im1 = integers[2];
+  const im2 = integers[3];
+
+  let complex_1 = re1;
+  if (im1 > 0) { complex_1 += "+"; }
+  complex_1 += transport_monomial(im1, "i");
+  let complex_2 = re2;
+  if (im2 > 0) { complex_2 += "+"; }
+  complex_2 += transport_monomial(im2, "i");
+
+  if (complex_1 === complex_2) {
+    ques = "(" + complex_1 + ")^{2}";
+  } else {
+    ques = "(" + complex_1 + ")(" + complex_2 + ")";
+  }
+
+  const re3 = re1 * re2 - im1 * im2;
+  const im3 = re1 * im2 + re2 * im1;
+  ans = re3 === 0 ? ans = "" : ans = re3;
+  if (im3 !== 0) {
+    if (re3 !== 0 && im3 > 0) { ans += "+"; }
+    ans += transport_monomial(im3, "i");
+  }
+
+  return [ques, ans];
+}
 
 // 問題作成 多項式の加法
 function addition_polynomials(range) {
@@ -362,8 +397,14 @@ function triangle_function_value(flag_value) {
   return [ques, ans];
 }
 
+// 2次方程式
+// 2次関数グラフ
+// 三角方程式
+// 微分
+// 不定積分
+// 定積分
 
-
+/* ************************************************************************************** */
 /** 数学の関数 */
 
 // ランダムな整数の生成
@@ -415,7 +456,18 @@ function gcd(...numbers) {
   return numbers.reduce((acc, val) => gcd_2(acc, val));
 }
 
+/* ************************************************************************************** */
+/* 数学用変換 */
 
+// 係数変換
+function transport_monomial(number, variable) {
+  const monomial = (number === 1 ? "" : number === -1 ? "-" : number) + variable;
+  return monomial;
+}
+
+
+
+/* ************************************************************************************** */
 /** LaTeXへの変換 */
 
 // 多項式
